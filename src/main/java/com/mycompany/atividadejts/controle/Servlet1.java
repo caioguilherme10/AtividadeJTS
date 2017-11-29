@@ -37,7 +37,7 @@ public class Servlet1 extends HttpServlet {
      * @throws com.vividsolutions.jts.io.ParseException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ParseException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -45,15 +45,18 @@ public class Servlet1 extends HttpServlet {
             String geometriaB = request.getParameter("geometriaB");
             WKTReader reader = new WKTReader();
         
-            Geometry geometria1 = reader.read(geometriaA);
-            Geometry geometria2 = reader.read(geometriaB);
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>AtividadeJTS</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<form name=\"form1\" method=\"post\" action=\"Servlet1\">\n" +
+            Geometry geometria1;
+            Geometry geometria2;
+            try {
+                geometria1 = reader.read(geometriaA);
+                geometria2 = reader.read(geometriaB);
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>AtividadeJTS</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<form name=\"form1\" method=\"post\" action=\"Servlet1\">\n" +
 "            \n" +
 "            <p>Digite a Geometria A: \n" +
 "                <input name=\"geometriaA\" type=\"text\" id=\"A\">\n" +
@@ -64,14 +67,14 @@ public class Servlet1 extends HttpServlet {
 "            \n" +
 "            <p> <input type=\"submit\" value=\"Enviar\"></p>\n" +
 "        </form>");
-            ViewBox box = new ViewBox();
-            out.println("<svg width=\"auto\" height=\"auto\"viewBox='\"+ box.getViewBox(geometria1, geometria2) +\"'>");
-            NewSVG svg = new NewSVG();
-            out.println("<path d='"+ svg.getSvg(geometria1)+"' fill=\"black\" stroke=\"black\"/>");
-            out.println("<path d='"+ svg.getSvg(geometria2)+"' fill=\"blue\" stroke=\"blue\"/>");
-            out.println("</svg><br>");
-            out.println("<div style=\" width:100%; \">");
-            out.println("<div style=\" width:20%; float: left;\"><h1><b>Binary Predicates</b></h1>"
+                ViewBox box = new ViewBox();
+                out.println("<svg width=\"auto\" height=\"auto\"viewBox='\"+ box.getViewBox(geometria1, geometria2) +\"'>");
+                NewSVG svg = new NewSVG();
+                out.println("<path d='"+ svg.getSvg(geometria1)+"' fill=\"black\" stroke=\"black\"/>");
+                out.println("<path d='"+ svg.getSvg(geometria2)+"' fill=\"blue\" stroke=\"blue\"/>");
+                out.println("</svg><br>");
+                out.println("<div style=\" width:100%; \">");
+                out.println("<div style=\" width:20%; float: left;\"><h1><b>Binary Predicates</b></h1>"
                     + "<ul style=\"list-style-type: none;\"><li>Equals</li>"
                     + "<li>Disjoint</li>"
                     + "<li>Intersects</li>"
@@ -83,8 +86,8 @@ public class Servlet1 extends HttpServlet {
                     + "<li>Covers</li>"
                     + "<li>CoveredBY</li>"
                     + "</ul></div>");
-            PropriedadesGeometry pg = new PropriedadesGeometry();
-            out.println("<div style=\" width:5%; float: left;\"><h1><b>AB</b></h1>"
+                PropriedadesGeometry pg = new PropriedadesGeometry();
+                out.println("<div style=\" width:5%; float: left;\"><h1><b>AB</b></h1>"
                     + "<ul style=\"list-style-type: none;\"> <li>"+ pg.equalsAB(geometria1, geometria2) +"</li>"
                     + "<li>"+ pg.disjointAB(geometria1, geometria2)+"</li>"
                     + "<li>"+ pg.intersectsAB(geometria1, geometria2)+"</li>"
@@ -96,7 +99,7 @@ public class Servlet1 extends HttpServlet {
                     + "<li>"+ pg.coversAB(geometria1, geometria2)+"</li>"
                     + "<li>"+ pg.coveredBYAB(geometria1, geometria2)+"</li>"
                     + "</ul></div>");
-            out.println("<div style=\" width:5%; float: left;\"><h1><b>BA</b></h1>"
+                out.println("<div style=\" width:5%; float: left;\"><h1><b>BA</b></h1>"
                     + "<ul style=\"list-style-type: none;\"> <li>"+ pg.equalsBA(geometria1, geometria2) +"</li>"
                     + "<li>"+ pg.disjointBA(geometria1, geometria2)+"</li>"
                     + "<li>"+ pg.intersectsBA(geometria1, geometria2)+"</li>"
@@ -108,12 +111,31 @@ public class Servlet1 extends HttpServlet {
                     + "<li>"+ pg.coversBA(geometria1, geometria2)+"</li>"
                     + "<li>"+ pg.coveredBYBA(geometria1, geometria2)+"</li>"
                     + "</ul></div>");
-            out.println("</div>");
-            //out.println(""+ svg.getSvg(geometria1)+"");
-            //out.println(""+ svg.getSvg(geometria2)+"");
-            //out.println(""+ box.getViewBox(geometria1, geometria2) +"");
-            out.println("</body>");
-            out.println("</html>");
+                out.println("</div>");
+                out.println("</body>");
+                out.println("</html>");
+            } catch (ParseException ex) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>AtividadeJTS</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<form name=\"form1\" method=\"post\" action=\"Servlet1\">\n" +
+"            \n" +
+"            <p>Digite a Geometria A: \n" +
+"                <input name=\"geometriaA\" type=\"text\" id=\"A\">\n" +
+"            </p>\n" +
+"            <p>Digite a Geometria B: \n" +
+"                <input name=\"geometriaB\" type=\"text\" id=\"B\">\n" +
+"            </p>\n" +
+"            \n" +
+"            <p> <input type=\"submit\" value=\"Enviar\"></p>\n" +
+"        </form>");
+                out.println("<h1>Erro! valores incorretos</h1>");
+                out.println("</body>");
+                out.println("</html>");
+            }
         }
     }
 
@@ -129,11 +151,7 @@ public class Servlet1 extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (ParseException ex) {
-            Logger.getLogger(Servlet1.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -147,11 +165,7 @@ public class Servlet1 extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (ParseException ex) {
-            Logger.getLogger(Servlet1.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
